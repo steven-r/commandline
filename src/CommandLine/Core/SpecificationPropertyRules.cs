@@ -18,7 +18,8 @@ namespace CommandLine.Core
                     EnforceMutuallyExclusiveSet(),
                     EnforceRequired(),
                     EnforceRange(),
-                    EnforceSingle(tokens)
+                    EnforceSingle(tokens),
+                    CustomValidations()
                 };
         }
 
@@ -153,6 +154,28 @@ namespace CommandLine.Core
                 return sequence.Contains(value);
             }
             return true;
+        }
+
+        private static Func<IEnumerable<SpecificationProperty>, IEnumerable<Error>> CustomValidations()
+        {
+            return specProps =>
+                {
+                    var list = new List<Error>();
+                    foreach (var prop in specProps)
+                    {
+                        var validators = prop.Property.GetCustomAttributes(typeof(PropertyValidationBase), true);
+                        foreach (var validator in validators)
+                        {
+                            var res = ((PropertyValidationBase)validator).Validate(prop, prop.Value.FromJust());
+                            if (res != null)
+                            {
+                                list.Add(res);
+                            }
+                        }
+                    }
+
+                    return list.AsEnumerable();
+                };
         }
     }
 }

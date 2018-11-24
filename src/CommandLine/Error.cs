@@ -60,7 +60,12 @@ namespace CommandLine
         /// <summary>
         /// Value of <see cref="CommandLine.VersionRequestedError"/> type.
         /// </summary>
-        VersionRequestedError
+        VersionRequestedError,
+
+        /// <summary>
+        /// Value of <see cref="CommandLine.ValidationFailedError"/> type.
+        /// </summary>
+        ValidationFailed
     }
 
     /// <summary>
@@ -470,5 +475,38 @@ namespace CommandLine
             : base(ErrorType.VersionRequestedError, true)
         {
         }
+    }
+
+    /// <summary>
+    /// Models an error generated when a value conversion fails.
+    /// </summary>
+    public sealed class ValidationFailedError : Error
+    {
+        public  ValidationFailedError(string propertyName, string message, bool stopProcessing)
+            : base(ErrorType.ValidationFailed, stopProcessing)
+        {
+            this.PropertyName = propertyName;
+            this.Message = message;
+        }
+
+        public ValidationFailedError(string propertyName, string message)
+            : this(propertyName, message, true)
+        {
+        }
+
+        public ValidationFailedError(string propertyName)
+            : this(propertyName, null)
+        {
+        }
+
+        /// <summary>
+        /// Gets the property name.
+        /// </summary>
+        public string PropertyName { get; }
+
+        /// <summary>
+        /// Gets the message.
+        /// </summary>
+        public string Message { get; }
     }
 }

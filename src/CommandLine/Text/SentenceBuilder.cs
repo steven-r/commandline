@@ -137,6 +137,8 @@ namespace CommandLine.Text
                                 case ErrorType.RepeatedOptionError:
                                     return "Option '".JoinTo(((RepeatedOptionError)error).NameInfo.NameText,
                                         "' is defined multiple times.");
+                                case ErrorType.ValidationFailed:
+                                    return "Validation failed: " + ((ValidationFailedError)error).Message;
                             }
                             throw new InvalidOperationException();
                         };
